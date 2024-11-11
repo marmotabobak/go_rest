@@ -14,8 +14,17 @@ func NewItemsProcessorRouter() *mux.Router {
 		key := vars["key"]
 		handlers.GetItem(w, key)
 	})
-	r.HandleFunc("/item/{key}/{action}", func(w http.ResponseWriter, r *http.Request){})
-	r.HandleFunc("/item/{key}/incr/{increment}", func(w http.ResponseWriter, r *http.Request){})
+	r.HandleFunc("/item/{key}/{action}", func(w http.ResponseWriter, r *http.Request){
+		// vars := mux.Vars(r)
+		// key := vars["key"]
+		// action := vars["action"]
+	})
+	r.HandleFunc("/item/{key}/incr/{increment}", func(w http.ResponseWriter, r *http.Request){
+		vars := mux.Vars(r)
+		key := vars["key"]
+		increment := vars["increment"]
+		handlers.IncreaseItem(w, key, increment)
+	})
 	r.Use(CountStat)
 	r.Use(CheckMethods)
 	return r

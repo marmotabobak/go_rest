@@ -7,9 +7,13 @@ import (
 )
 
 func GetItem(w http.ResponseWriter, key string) {
-	if val, exists := itemscache.Cache[key]; !exists {
+
+	val, exists := itemscache.Cache[key]
+
+	if !exists {
 		fmt.Fprint(w, "No such key in cache\n")
-	} else {
-		fmt.Fprintf(w, "%v\n", val) 
+		return
 	}
+
+	fmt.Fprintf(w, "%v\n", val) 
 }

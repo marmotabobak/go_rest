@@ -12,7 +12,7 @@ func CheckMethods(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		_, actionIsDefined := vars["action"]
-		_, incrIsDefined := vars["incr"]
+		_, incrIsDefined := vars["increment"]
 
 		if r.Method == http.MethodPost && !(actionIsDefined || incrIsDefined) {
 			http.Error(w, "action should be defined for POST method", http.StatusMethodNotAllowed)
