@@ -4,4 +4,4 @@ import (
 	"sync"
 )
 
-var M sync.Mutex
+var M sync.RWMutex

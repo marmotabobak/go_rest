@@ -21,7 +21,10 @@ func (s StatStorageType) Update(itemAction string) {
 }
 
 func (s StatStorageType) String() string {
-	return fmt.Sprintf("%v", utils.SprintMapStringInt(StatStorage))
+	mutex.M.RLock()
+	res := fmt.Sprintf("%v", utils.SprintMapStringInt(StatStorage))
+	mutex.M.RUnlock()
+	return res
 }
 
 
