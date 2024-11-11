@@ -18,6 +18,31 @@ type TestCase struct {
 func TestNewItemsProcessorRouter(t *testing.T) {
 
 	tests := []TestCase{
+		// positive tests
+		{
+			methods: []string{http.MethodGet},
+			path: "/stat",
+			statusCode: http.StatusOK,
+			result: utils.SprintMapStringInt(map[string]int{"GET stat": 1}),
+		},
+		{
+			methods: utils.GetPutDeleteMethods[:],
+			path: "/item/1",
+			statusCode: http.StatusOK,
+			result: "No such key in cache\n",
+		},
+		{
+			methods: []string{http.MethodPost},
+			path: "/item/1/action",
+			statusCode: http.StatusOK,
+			result: "",
+		},
+		{
+			methods: []string{http.MethodPost},
+			path: "/item/1/incr/1",
+			statusCode: http.StatusOK,
+			result: "No such key in cache\n",
+		},
 		// negative tests
 		{
 			methods: []string{http.MethodPost},
@@ -42,25 +67,6 @@ func TestNewItemsProcessorRouter(t *testing.T) {
 			path: "/stat",
 			statusCode: http.StatusMethodNotAllowed,
 			result: "stat action has only GET method\n",
-		},
-		// positive tests
-		{
-			methods: utils.GetPutDeleteMethods[:],
-			path: "/item/1",
-			statusCode: http.StatusOK,
-			result: "",
-		},
-		{
-			methods: []string{http.MethodGet},
-			path: "/stat",
-			statusCode: http.StatusOK,
-			result: "",
-		},
-		{
-			methods: []string{http.MethodPost},
-			path: "/item/1/action",
-			statusCode: http.StatusOK,
-			result: "",
 		},
 	}
 

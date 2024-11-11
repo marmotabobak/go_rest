@@ -8,11 +8,7 @@ import (
 
 type StatStorageType map[string]int
 
-var StatStorage StatStorageType
-
-func Init() {
-	StatStorage = make(StatStorageType)
-}
+var StatStorage StatStorageType = StatStorageType{}
 
 func (s StatStorageType) Update(itemAction string) {
 	mutex.M.Lock()

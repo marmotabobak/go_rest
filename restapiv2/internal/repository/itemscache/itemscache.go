@@ -6,12 +6,8 @@ import (
 
 type CacheType map[string]string
 
-var Cache CacheType
+var Cache CacheType// = CacheType{"1": "100"}
 
-func Init() {
-	Cache = make(CacheType)
-	Cache["1"] = "100"
-}
 
 func (c CacheType) GetItem(k string) (string, bool) {
 	mutex.M.RLock()
