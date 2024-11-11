@@ -5,11 +5,11 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	// "restapiv2/pkg/utils"
+	"restapiv2/pkg/utils"
 )
 
 type TestCase struct {
-	method string
+	methods []string
 	path string
 	statusCode int
 	result string
@@ -17,69 +17,73 @@ type TestCase struct {
 
 func TestNewItemsProcessorRouter(t *testing.T) {
 
-	// negative tests
 	tests := []TestCase{
+		// negative tests
 		{
-			method: http.MethodPost,
+			methods: []string{http.MethodPost},
 			path: "/stat",
 			statusCode: http.StatusMethodNotAllowed,
-			result: "action should be defined for POST method",
+			result: "action should be defined for POST method\n",
 		},
 		{
-			method: http.MethodPost,
+			methods: []string{http.MethodPost},
 			path: "/item/1",
 			statusCode: http.StatusMethodNotAllowed,
-			result: "action should be defined for POST method",
+			result: "action should be defined for POST method\n",
 		},
 		{
-			method: http.MethodGet,
+			methods: utils.GetPutDeleteMethods[:],
 			path: "/item/1/action",
 			statusCode: http.StatusMethodNotAllowed,
-			result: "GET/PUT/DELETE methods are not allowed for actions",
+			result: "GET/PUT/DELETE methods are not allowed for actions\n",
 		},
 		{
-			method: http.MethodPut,
-			path: "/item/1/action",
-			statusCode: http.StatusMethodNotAllowed,
-			result: "GET/PUT/DELETE methods are not allowed for actions",
-		},
-		{
-			method: http.MethodDelete,
-			path: "/item/1/action",
-			statusCode: http.StatusMethodNotAllowed,
-			result: "GET/PUT/DELETE methods are not allowed for actions",
-		},
-		{
-			method: http.MethodPut,
+			methods: utils.PutDeleteMethods[:],
 			path: "/stat",
 			statusCode: http.StatusMethodNotAllowed,
-			result: "stat action has only GET method",
+			result: "stat action has only GET method\n",
+		},
+		// positive tests
+		{
+			methods: utils.GetPutDeleteMethods[:],
+			path: "/item/1",
+			statusCode: http.StatusOK,
+			result: "",
 		},
 		{
-			method: http.MethodDelete,
+			methods: []string{http.MethodGet},
 			path: "/stat",
-			statusCode: http.StatusMethodNotAllowed,
-			result: "stat action has only GET method",
+			statusCode: http.StatusOK,
+			result: "",
+		},
+		{
+			methods: []string{http.MethodPost},
+			path: "/item/1/action",
+			statusCode: http.StatusOK,
+			result: "",
 		},
 	}
 
 	router := NewItemsProcessorRouter()	
 
 	for _, testCase := range tests {
-		w := httptest.NewRecorder()
-		r := httptest.NewRequest(testCase.method, testCase.path, nil)
+		
+		for _, method := range testCase.methods {
+			w := httptest.NewRecorder()
+			r := httptest.NewRequest(method, testCase.path, nil)
 
-		router.ServeHTTP(w, r)
-		res := w.Result()
-	
-		if res.StatusCode != testCase.statusCode {
-			t.Errorf("%d status code expected, got: %d", testCase.statusCode, res.StatusCode)
-		}
+			router.ServeHTTP(w, r)
+			res := w.Result()
+		
+			if res.StatusCode != testCase.statusCode {
+				t.Errorf("%d status code expected, got: %d", testCase.statusCode, res.StatusCode)
+			}
 
-		buf, _ := io.ReadAll(res.Body)
-		defer res.Body.Close()
-		if string(buf) != testCase.result + "\n" {
-			t.Errorf("\"%s\" result expected, got: \"%s\"", testCase.result, string(buf))
+			buf, _ := io.ReadAll(res.Body)
+			defer res.Body.Close()
+			if string(buf) != testCase.result {
+				t.Errorf("for path %s and method %s \"%s\" result expected, got: \"%s\"", testCase.path, method, testCase.result, string(buf))
+			}
 		}
 	
 	// 	buf, _ := io.ReadAll(res.Body)

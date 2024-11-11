@@ -3,7 +3,6 @@ package router
 import (
 	"net/http"
 	"restapiv2/pkg/utils"
-
 	"github.com/gorilla/mux"
 )
 
