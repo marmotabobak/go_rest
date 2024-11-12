@@ -6,13 +6,6 @@ import (
 	"sort"
 )
 
-var AllHTTPMethods = [4]string{
-	http.MethodGet,
-	http.MethodPost,
-	http.MethodPut,
-	http.MethodDelete,
-}
-
 var GetPutDeleteMethods = [3]string{
 	http.MethodGet,
 	http.MethodPut,
@@ -33,31 +26,12 @@ func MethodIsGetPutDelete(method string) bool {
 	return false
 }
 
-func MethodIsPutDelete(method string) bool {
-	for _, httpMethod := range PutDeleteMethods {
-		if method == httpMethod {
-			return true
-		}
-	}
-	return false
-}
-
 func SprintMapStringInt(m map[string]int) string {
 	var s string
 	for k, v := range m {
 		s += fmt.Sprintf("%s:\t%d\n", k, v)
 	}
 	return s
-}
-
-func ParseURL(urlArray []string) []string {
-	res := make([]string, 0)
-	for _, v := range urlArray {
-		if v != "" {
-			res = append(res, v)
-		}
-	}
-	return res
 }
 
 func ReversreString(s string) string {
