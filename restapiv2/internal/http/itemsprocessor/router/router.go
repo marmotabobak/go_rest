@@ -2,30 +2,68 @@ package router
 
 import (
 	"net/http"
-	"github.com/gorilla/mux"
 	"restapiv2/internal/http/itemsprocessor/handlers"
+	"github.com/gorilla/mux"
 )
 
 func NewItemsProcessorRouter() *mux.Router {
 	r := mux.NewRouter()
-	r.HandleFunc("/stat", handlers.PrintStat)
-	r.HandleFunc("/item/{key}", func(w http.ResponseWriter, r *http.Request){
-		vars := mux.Vars(r)
-		key := vars["key"]
+	r.HandleFunc("/stat", StatHandler)
+	r.HandleFunc("/item/{key}", GetItemHandler)
+	r.HandleFunc("/item/{key}/{action}", PostHandler)
+	r.HandleFunc("/item/{key}/incr/{increment}", Increasehandler)
+	r.Use(CountStat)
+	return r
+}
+
+func StatHandler(w http.ResponseWriter, r *http.Request){
+	switch r.Method {
+	case http.MethodGet:
+		handlers.PrintStat(w)
+	default:
+		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+	}
+}
+
+func GetItemHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	key := vars["key"]
+	switch r.Method {
+	case http.MethodGet:
 		handlers.GetItem(w, key)
-	})
-	r.HandleFunc("/item/{key}/{action}", func(w http.ResponseWriter, r *http.Request){
-		// vars := mux.Vars(r)
+	case http.MethodPut:
+		handlers.PutItem(w, r, key)
+	case http.MethodDelete:
+	default:
+		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+	}
+}
+
+func PostHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodPost {
+		vars := mux.Vars(r)
 		// key := vars["key"]
-		// action := vars["action"]
-	})
-	r.HandleFunc("/item/{key}/incr/{increment}", func(w http.ResponseWriter, r *http.Request){
+		action := vars["action"]
+		
+		switch action {
+		case "reverse":
+		case "sort":
+		case "dedup":
+		default: 
+			http.Error(w, "Unknown action", http.StatusBadRequest)
+		}
+	} else {
+		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+	}
+}
+
+func Increasehandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodPost {
 		vars := mux.Vars(r)
 		key := vars["key"]
 		increment := vars["increment"]
 		handlers.IncreaseItem(w, key, increment)
-	})
-	r.Use(CountStat)
-	r.Use(CheckMethods)
-	return r
+	} else {
+		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+	}
 }

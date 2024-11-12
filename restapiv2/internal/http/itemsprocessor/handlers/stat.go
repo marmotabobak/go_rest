@@ -6,6 +6,6 @@ import (
 	"restapiv2/internal/repository/stat"
 )
 
-func PrintStat(w http.ResponseWriter, r *http.Request) {
+func PrintStat(w http.ResponseWriter) {
 	fmt.Fprint(w, stat.StatStorage.String())
 }

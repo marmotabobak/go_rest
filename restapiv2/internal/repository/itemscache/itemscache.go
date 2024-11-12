@@ -6,7 +6,7 @@ import (
 
 type CacheType map[string]string
 
-var Cache CacheType// = CacheType{"1": "100"}
+var Cache CacheType = CacheType{"1": "100"}
 
 
 func (c CacheType) GetItem(k string) (string, bool) {

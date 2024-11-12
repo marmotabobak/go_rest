@@ -1,4 +1,4 @@
-package model
+package models
 
 type Item struct {
 	Data ItemData `json:"data"`
