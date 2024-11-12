@@ -9,21 +9,21 @@ type CacheType map[string]string
 var Cache CacheType = CacheType{"1": "100"}
 
 
-func (c CacheType) GetItem(k string) (string, bool) {
+func (c *CacheType) GetItem(key string) (string, bool) {
 	mutex.M.RLock()
-	item, found := c[k]
+	item, found := (*c)[key]
 	mutex.M.RUnlock()
 	return item, found
 }
 
-func (c CacheType) UpdateItem(k, v string) {
+func (c *CacheType) UpdateItem(key, value string) {
 	mutex.M.Lock()
-	c[k] = v
+	(*c)[key] = value
 	mutex.M.Unlock()
 }
 
-func (c CacheType) DeleteItem(k string) {
+func (c *CacheType) DeleteItem(key string) {
 	mutex.M.Lock()
-	delete(c, k)
+	delete(*c, key)
 	mutex.M.Unlock()
 }

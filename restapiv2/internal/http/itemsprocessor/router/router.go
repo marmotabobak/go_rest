@@ -34,6 +34,7 @@ func GetItemHandler(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPut:
 		handlers.PutItem(w, r, key)
 	case http.MethodDelete:
+		handlers.Deleteitem(w, key)
 	default:
 		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
 	}
