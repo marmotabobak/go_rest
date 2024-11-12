@@ -43,14 +43,12 @@ func GetItemHandler(w http.ResponseWriter, r *http.Request) {
 func PostHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		vars := mux.Vars(r)
-		// key := vars["key"]
+		key := vars["key"]
 		action := vars["action"]
 		
-		switch action {
-		case "reverse":
-		case "sort":
-		case "dedup":
-		default: 
+		if action == "reverse" || action == "sort" || action == "dedup" {
+			handlers.PostItem(w, action, key)
+		} else {
 			http.Error(w, "Unknown action", http.StatusBadRequest)
 		}
 	} else {

@@ -9,6 +9,13 @@ import (
 )
 
 func PutItem(w http.ResponseWriter, r *http.Request, key string) {
+
+	_, exists := itemscache.Cache[key]
+	if !exists {
+		http.Error(w, "No such key in cache\n", http.StatusInternalServerError)
+		return
+	}
+
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		http.Error(w, "Error while parsing request body\n", http.StatusInternalServerError)
