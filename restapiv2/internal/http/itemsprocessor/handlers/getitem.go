@@ -1,9 +1,9 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"restapiv2/internal/repository/itemscache"
-	"fmt"
 )
 
 func GetItem(w http.ResponseWriter, key string) {
@@ -12,5 +12,5 @@ func GetItem(w http.ResponseWriter, key string) {
 		http.Error(w, "No such key in cache\n", http.StatusInternalServerError)
 		return
 	}
-	fmt.Fprintf(w, "%v\n", val) 
+	fmt.Fprintf(w, "%v\n", val)
 }

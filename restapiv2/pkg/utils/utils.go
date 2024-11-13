@@ -1,8 +1,8 @@
 package utils
 
 import (
-	"net/http"
 	"fmt"
+	"net/http"
 	"sort"
 )
 
@@ -53,7 +53,7 @@ func DeduplicateString(s string) string {
 		runes = append(runes, r)
 		m[r] = true
 	}
-	
+
 	return string(runes)
 }
 

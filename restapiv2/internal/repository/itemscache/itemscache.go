@@ -8,7 +8,6 @@ type CacheType map[string]string
 
 var Cache CacheType = CacheType{}
 
-
 func (c *CacheType) GetItem(key string) (string, bool) {
 	mutex.M.RLock()
 	item, found := (*c)[key]

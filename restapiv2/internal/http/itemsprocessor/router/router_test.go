@@ -70,17 +70,17 @@ package router
 // 		},
 // 	}
 
-// 	router := NewItemsProcessorRouter()	
+// 	router := NewItemsProcessorRouter()
 
 // 	for _, testCase := range tests {
-		
+
 // 		for _, method := range testCase.methods {
 // 			w := httptest.NewRecorder()
 // 			r := httptest.NewRequest(method, testCase.path, nil)
 
 // 			router.ServeHTTP(w, r)
 // 			res := w.Result()
-		
+
 // 			if res.StatusCode != testCase.statusCode {
 // 				t.Errorf("%d status code expected, got: %d", testCase.statusCode, res.StatusCode)
 // 			}
@@ -91,15 +91,13 @@ package router
 // 				t.Errorf("for path %s and method %s \"%s\" result expected, got: \"%s\"", testCase.path, method, testCase.result, string(buf))
 // 			}
 // 		}
-	
+
 // 	// 	buf, _ := io.ReadAll(res.Body)
 // 	// 	defer res.Body.Close()
 // 	// }
-		
+
 // 	}
 
-
 // 	// for _, method := range utils.AllHTTPMethods {
-
 
 // }

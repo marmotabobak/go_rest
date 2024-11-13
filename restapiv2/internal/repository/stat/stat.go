@@ -1,9 +1,9 @@
 package stat
 
 import (
+	"fmt"
 	"restapiv2/internal/mutex"
 	"restapiv2/pkg/utils"
-	"fmt"
 )
 
 type StatStorageType map[string]int
@@ -22,6 +22,3 @@ func (s StatStorageType) String() string {
 	mutex.M.RUnlock()
 	return res
 }
-
-
-

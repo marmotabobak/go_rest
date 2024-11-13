@@ -1,9 +1,9 @@
 package router
 
 import (
+	"github.com/gorilla/mux"
 	"net/http"
 	"restapiv2/internal/http/itemsprocessor/handlers"
-	"github.com/gorilla/mux"
 )
 
 func NewItemsProcessorRouter() *mux.Router {
@@ -16,7 +16,7 @@ func NewItemsProcessorRouter() *mux.Router {
 	return r
 }
 
-func StatHandler(w http.ResponseWriter, r *http.Request){
+func StatHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		handlers.PrintStat(w)
@@ -45,7 +45,7 @@ func PostHandler(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		key := vars["key"]
 		action := vars["action"]
-		
+
 		if action == "reverse" || action == "sort" || action == "dedup" {
 			handlers.PostItem(w, action, key)
 		} else {
