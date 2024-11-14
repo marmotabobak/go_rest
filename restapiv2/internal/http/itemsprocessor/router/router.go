@@ -1,10 +1,11 @@
 package router
 
 import (
-	"github.com/gorilla/mux"
 	"net/http"
 	"restapiv2/internal/http/itemsprocessor/handlers"
 	"restapiv2/internal/http/itemsprocessor/statcounter"
+
+	"github.com/gorilla/mux"
 )
 
 type ItemsProcessorRouter struct {
@@ -13,16 +14,16 @@ type ItemsProcessorRouter struct {
 
 func NewItemsProcessorRouter() *ItemsProcessorRouter {
 
-	sc := statcounter.NewStatCounter()
+	statCounter := statcounter.NewStatCounter()
 	r := mux.NewRouter()
 
-	r.Handle("/stat", sc)
+	r.Handle("/stat", statCounter)
 	r.HandleFunc("/item/{key}", GetItemHandler)
 	r.HandleFunc("/item/{key}/{action}", PostHandler)
 	r.HandleFunc("/item/{key}/incr/{increment}", Increasehandler)
-	r.Use(sc.CountStat)
-	
-	return &ItemsProcessorRouter {
+	r.Use(statCounter.Count)
+
+	return &ItemsProcessorRouter{
 		MuxRouter: r,
 	}
 }

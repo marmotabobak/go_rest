@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"restapiv2/internal/repository/statstorage"
+
 	"github.com/gorilla/mux"
 )
 
@@ -17,11 +18,7 @@ func NewStatCounter() *StatCounter {
 	}
 }
 
-func (sc *StatCounter) Update(itemAction string) {
-	sc.statStorage.Update(itemAction)
-}
-
-func (sc *StatCounter) CountStat(handler http.Handler) http.Handler {
+func (sc *StatCounter) Count(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var processedAction string
 		vars := mux.Vars(r)
@@ -46,7 +43,7 @@ func (sc *StatCounter) CountStat(handler http.Handler) http.Handler {
 		}
 
 		statAction := fmt.Sprintf("%s %s", r.Method, processedAction)
-		sc.Update(statAction)
+		sc.statStorage.Update(statAction)
 
 		handler.ServeHTTP(w, r)
 	})
