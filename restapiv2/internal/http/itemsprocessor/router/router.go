@@ -9,7 +9,6 @@ import (
 
 type ItemsProcessorRouter struct {
 	MuxRouter *mux.Router
-	StatCounter *statcounter.StatCounter
 }
 
 func NewItemsProcessorRouter() *ItemsProcessorRouter {
@@ -17,32 +16,29 @@ func NewItemsProcessorRouter() *ItemsProcessorRouter {
 	sc := statcounter.NewStatCounter()
 	r := mux.NewRouter()
 
-	ipr := ItemsProcessorRouter {
-		MuxRouter: r,
-		StatCounter: sc,
-	}
-
-	r.HandleFunc("/stat", ipr.StatHandler)
+	r.Handle("/stat", sc)
 	r.HandleFunc("/item/{key}", GetItemHandler)
 	r.HandleFunc("/item/{key}/{action}", PostHandler)
 	r.HandleFunc("/item/{key}/incr/{increment}", Increasehandler)
 	r.Use(sc.CountStat)
 	
-	return &ipr
+	return &ItemsProcessorRouter {
+		MuxRouter: r,
+	}
 }
 
 func (ipr *ItemsProcessorRouter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	ipr.MuxRouter.ServeHTTP(w, r)
 }
 
-func (ipr *ItemsProcessorRouter) StatHandler(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case http.MethodGet:
-		ipr.StatCounter.PrintStat(w)
-	default:
-		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
-	}
-}
+// func (ipr *ItemsProcessorRouter) StatHandler(w http.ResponseWriter, r *http.Request) {
+// 	switch r.Method {
+// 	case http.MethodGet:
+// 		ipr.StatCounter.PrintStat(w)
+// 	default:
+// 		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+// 	}
+// }
 
 func GetItemHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"restapiv2/internal/repository/statstorage"
-
 	"github.com/gorilla/mux"
 )
 
@@ -53,7 +52,11 @@ func (sc *StatCounter) CountStat(handler http.Handler) http.Handler {
 	})
 }
 
-func (sc *StatCounter) PrintStat(w http.ResponseWriter) {
-	fmt.Fprint(w, sc.statStorage.String())
-	// fmt.Fprint(w, "STAT")
+func (sc *StatCounter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		fmt.Fprint(w, sc.statStorage.String())
+	default:
+		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+	}
 }
