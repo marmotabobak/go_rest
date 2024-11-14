@@ -6,14 +6,21 @@ import (
 	"restapiv2/internal/http/itemsprocessor/handlers"
 )
 
-func NewItemsProcessorRouter() *mux.Router {
+type ItemsProcessorRouter struct {
+	MuxRouter *mux.Router
+}
+
+func NewItemsProcessorRouter() *ItemsProcessorRouter {
 	r := mux.NewRouter()
 	r.HandleFunc("/stat", StatHandler)
 	r.HandleFunc("/item/{key}", GetItemHandler)
 	r.HandleFunc("/item/{key}/{action}", PostHandler)
 	r.HandleFunc("/item/{key}/incr/{increment}", Increasehandler)
 	r.Use(CountStat)
-	return r
+	
+	return &ItemsProcessorRouter {
+		MuxRouter: r,
+	}
 }
 
 func StatHandler(w http.ResponseWriter, r *http.Request) {
