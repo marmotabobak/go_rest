@@ -8,8 +8,12 @@ type StatCounter struct {
 	statStorage *statstorage.StatStorageType
 }
 
-func NewStatCounter(ss *statstorage.StatStorageType) *StatCounter{
+func NewStatCounter() *StatCounter{
 	return &StatCounter {
-		statStorage: ss,
+		statStorage: &statstorage.StatStorage,
 	}
+}
+
+func (sc *StatCounter) Update(itemAction string) {
+	sc.statStorage.Update(itemAction)
 }
