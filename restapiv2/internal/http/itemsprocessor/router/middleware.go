@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
-	"restapiv2/internal/repository/stat"
+	"restapiv2/internal/repository/statstorage"
 )
 
 func CountStat(handler http.Handler) http.Handler {
@@ -32,7 +32,7 @@ func CountStat(handler http.Handler) http.Handler {
 		}
 
 		statAction := fmt.Sprintf("%s %s", r.Method, processedAction)
-		stat.StatStorage.Update(statAction)
+		statstorage.StatStorage.Update(statAction)
 
 		handler.ServeHTTP(w, r)
 	})

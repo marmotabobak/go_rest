@@ -1,14 +1,14 @@
 package statcounter
 
 import (
-	"restapiv2/internal/repository/stat"
+	"restapiv2/internal/repository/statstorage"
 )
 
 type StatCounter struct {
-	statStorage *stat.StatStorageType
+	statStorage *statstorage.StatStorageType
 }
 
-func NewStatCounter(ss *stat.StatStorageType) *StatCounter{
+func NewStatCounter(ss *statstorage.StatStorageType) *StatCounter{
 	return &StatCounter {
 		statStorage: ss,
 	}
