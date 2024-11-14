@@ -11,12 +11,14 @@ type ItemsProcessorRouter struct {
 }
 
 func NewItemsProcessorRouter() *ItemsProcessorRouter {
+	sc := NewStatCounter()
+
 	r := mux.NewRouter()
 	r.HandleFunc("/stat", StatHandler)
 	r.HandleFunc("/item/{key}", GetItemHandler)
 	r.HandleFunc("/item/{key}/{action}", PostHandler)
 	r.HandleFunc("/item/{key}/incr/{increment}", Increasehandler)
-	r.Use(CountStat)
+	r.Use(sc.CountStat)
 	
 	return &ItemsProcessorRouter {
 		MuxRouter: r,

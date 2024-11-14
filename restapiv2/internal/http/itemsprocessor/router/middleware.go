@@ -7,7 +7,17 @@ import (
 	"restapiv2/internal/repository/statstorage"
 )
 
-func CountStat(handler http.Handler) http.Handler {
+type StatCounter struct {
+	statStorage *statstorage.StatStorageType
+}
+
+func NewStatCounter() *StatCounter {
+	return &StatCounter{
+		statStorage: &statstorage.StatStorage,
+	}
+}
+
+func (sc *StatCounter) CountStat(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var processedAction string
 		vars := mux.Vars(r)
@@ -32,7 +42,7 @@ func CountStat(handler http.Handler) http.Handler {
 		}
 
 		statAction := fmt.Sprintf("%s %s", r.Method, processedAction)
-		statstorage.StatStorage.Update(statAction)
+		sc.statStorage.Update(statAction)
 
 		handler.ServeHTTP(w, r)
 	})
