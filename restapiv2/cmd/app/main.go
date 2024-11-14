@@ -7,6 +7,7 @@ import (
 )
 
 func main() {
-	r := router.NewItemsProcessorRouter()
-	log.Fatal(http.ListenAndServe(":8000", r.MuxRouter))
+	router := router.NewItemsProcessorRouter()
+
+	log.Fatal(http.ListenAndServe(":8000", router))
 }

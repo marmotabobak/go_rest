@@ -23,6 +23,10 @@ func NewItemsProcessorRouter() *ItemsProcessorRouter {
 	}
 }
 
+func (ipr *ItemsProcessorRouter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	ipr.MuxRouter.ServeHTTP(w, r)
+}
+
 func StatHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
