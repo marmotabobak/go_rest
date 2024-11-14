@@ -1,28 +1,44 @@
 package itemscache
 
 import (
-	"restapiv2/internal/mutex"
+	"sync"
 )
 
-type CacheType map[string]string
+type Cache struct {
+	cache map[string]string
+	m     sync.RWMutex
+}
 
-var Cache CacheType = CacheType{}
+func NewCache() *Cache {
+	return &Cache{
+		cache: make(map[string]string),
+		m:     sync.RWMutex{},
+	}
+}
 
-func (c *CacheType) GetItem(key string) (string, bool) {
-	mutex.M.RLock()
-	item, found := (*c)[key]
-	mutex.M.RUnlock()
+func (c *Cache) GetItem(key string) (string, bool) {
+	c.m.RLock()
+	item, found := c.cache[key]
+	c.m.RUnlock()
 	return item, found
 }
 
-func (c *CacheType) UpdateItem(key, value string) {
-	mutex.M.Lock()
-	(*c)[key] = value
-	mutex.M.Unlock()
+func (c *Cache) UpdateItem(key, value string) {
+	c.m.Lock()
+	c.cache[key] = value
+	c.m.Unlock()
 }
 
-func (c *CacheType) DeleteItem(key string) {
-	mutex.M.Lock()
-	delete(*c, key)
-	mutex.M.Unlock()
+func (c *Cache) DeleteItem(key string) {
+	c.m.Lock()
+	delete(c.cache, key)
+	c.m.Unlock()
+}
+
+func (c *Cache) ReturnValueIfExists(key string) (string, bool) {
+	val, exists :=  c.cache[key]
+	if !exists {
+		return "", false
+	}
+	return val, true
 }

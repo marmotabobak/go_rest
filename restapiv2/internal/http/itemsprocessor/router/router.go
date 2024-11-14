@@ -1,73 +1,83 @@
 package router
 
 import (
+	"github.com/gorilla/mux"
 	"net/http"
 	"restapiv2/internal/http/itemsprocessor/handlers"
-	"github.com/gorilla/mux"
+	"restapiv2/internal/repository/itemscache"
 )
 
 type ItemsProcessorRouter struct {
-	MuxRouter *mux.Router
+	muxRouter *mux.Router
+	cache *itemscache.Cache
 }
 
 func NewItemsProcessorRouter() *ItemsProcessorRouter {
 
-	statCounter := handlers.NewStatCounter()
+	cache := itemscache.NewCache()
+	statCountHandler := handlers.NewStatCountHandler()
 	r := mux.NewRouter()
 
-	r.Handle("/stat", statCounter)
-	r.HandleFunc("/item/{key}", GetItemHandler)
-	r.HandleFunc("/item/{key}/{action}", PostHandler)
-	r.HandleFunc("/item/{key}/incr/{increment}", Increasehandler)
-	r.Use(statCounter.Count)
-
-	return &ItemsProcessorRouter{
-		MuxRouter: r,
+	i := ItemsProcessorRouter{
+		muxRouter: r,
+		cache: cache,
 	}
+
+	r.Handle("/stat", statCountHandler)
+	r.HandleFunc("/item/{key}", i.getItemHandler)
+	// r.HandleFunc("/item/{key}/{action}", postHandler)
+	// r.HandleFunc("/item/{key}/incr/{increment}", increasehandler)
+	r.Use(statCountHandler.Count)
+
+	return &i
+
 }
 
-func (ipr *ItemsProcessorRouter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	ipr.MuxRouter.ServeHTTP(w, r)
+func (i *ItemsProcessorRouter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	i.muxRouter.ServeHTTP(w, r)
 }
 
-func GetItemHandler(w http.ResponseWriter, r *http.Request) {
+// TODO: Нужно ли выносить логику маршрутизации в хэндлеры-функции или оставить здесь в маршрутизаторе?
+// Для StatCounter вынес в него, но и он является не функцией, а хэндлером полноценным
+
+func (i *ItemsProcessorRouter) getItemHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	key := vars["key"]
 	switch r.Method {
 	case http.MethodGet:
-		handlers.GetItem(w, key)
-	case http.MethodPut:
-		handlers.PutItem(w, r, key)
-	case http.MethodDelete:
-		handlers.Deleteitem(w, key)
+		handlers.GetItem(w, i.cache, key)
+	// case http.MethodPut:
+	// 	handlers.PutItem(w, r, key)
+	// case http.MethodDelete:
+	// 	handlers.Deleteitem(w, key)
 	default:
 		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
 	}
 }
 
-func PostHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodPost {
-		vars := mux.Vars(r)
-		key := vars["key"]
-		action := vars["action"]
+// func postHandler(w http.ResponseWriter, r *http.Request) {
+// 	if r.Method == http.MethodPost {
+// 		vars := mux.Vars(r)
+// 		key := vars["key"]
+// 		action := vars["action"]
 
-		if action == "reverse" || action == "sort" || action == "dedup" {
-			handlers.PostItem(w, action, key)
-		} else {
-			http.Error(w, "Unknown action", http.StatusBadRequest)
-		}
-	} else {
-		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
-	}
-}
+// 		if action == "reverse" || action == "sort" || action == "dedup" {
+// 			handlers.PostItem(w, action, key)
+// 		} else {
+// 			http.Error(w, "Unknown action", http.StatusBadRequest)
+// 		}
+// 	} else {
+// 		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+// 	}
+// }
 
-func Increasehandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodPost {
-		vars := mux.Vars(r)
-		key := vars["key"]
-		increment := vars["increment"]
-		handlers.IncreaseItem(w, key, increment)
-	} else {
-		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
-	}
-}
+// func increasehandler(w http.ResponseWriter, r *http.Request) {
+// 	if r.Method == http.MethodPost {
+// 		vars := mux.Vars(r)
+// 		key := vars["key"]
+// 		increment := vars["increment"]
+// 		handlers.IncreaseItem(w, key, increment)
+// 	} else {
+// 		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+// 	}
+// }

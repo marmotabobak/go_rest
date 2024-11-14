@@ -2,22 +2,22 @@ package handlers
 
 import (
 	"fmt"
-	"github.com/gorilla/mux"
 	"net/http"
 	"restapiv2/internal/repository/statstorage"
+	"github.com/gorilla/mux"
 )
 
-type StatCounter struct {
+type StatCountHandler struct {
 	statStorage *statstorage.StatStorage
 }
 
-func NewStatCounter() *StatCounter {
-	return &StatCounter{
+func NewStatCountHandler() *StatCountHandler {
+	return &StatCountHandler{
 		statStorage: statstorage.NewStatStorage(),
 	}
 }
 
-func (sc *StatCounter) Count(handler http.Handler) http.Handler {
+func (sc *StatCountHandler) Count(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var processedAction string
 		vars := mux.Vars(r)
@@ -48,7 +48,7 @@ func (sc *StatCounter) Count(handler http.Handler) http.Handler {
 	})
 }
 
-func (sc *StatCounter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (sc *StatCountHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		fmt.Fprint(w, sc.statStorage.String())

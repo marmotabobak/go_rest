@@ -6,8 +6,8 @@ import (
 	"restapiv2/internal/repository/itemscache"
 )
 
-func GetItem(w http.ResponseWriter, key string) {
-	val, exists := itemscache.Cache[key]
+func GetItem (w http.ResponseWriter, cache *itemscache.Cache, key string) {
+	val, exists := cache.ReturnValueIfExists(key)
 	if !exists {
 		http.Error(w, "No such key in cache\n", http.StatusInternalServerError)
 		return
