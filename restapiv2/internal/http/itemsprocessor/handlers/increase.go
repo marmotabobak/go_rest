@@ -1,34 +1,33 @@
 package handlers
 
-// import (
-// 	"fmt"
-// 	"net/http"
-// 	"restapiv2/internal/repository/itemscache"
-// 	"strconv"
-// )
+import (
+	"fmt"
+	"net/http"
+	"restapiv2/internal/repository/itemscache"
+	"strconv"
+)
 
-// func IncreaseItem(w http.ResponseWriter, key string, increment string) {
+func IncreaseItem(w http.ResponseWriter, cache *itemscache.Cache, key string, increment string) {
 
-// 	val, exists := itemscache.Cache[key]
+	val, exists := cache.ReturnValueIfExists(key)
+	if !exists {
+		http.Error(w, "No such key in cache\n", http.StatusInternalServerError)
+		return
+	}
+	
+	currentVal := val
 
-// 	if !exists {
-// 		http.Error(w, "No such key in cache\n", http.StatusInternalServerError)
-// 		return
-// 	}
+	currentValInt, err := strconv.Atoi(currentVal)
+	if err != nil {
+		http.Error(w, "Key value should be int\n", http.StatusInternalServerError)
+		return
+	}
 
-// 	currentVal := val
+	incInt, err := strconv.Atoi(increment)
+	if err != nil {
+		http.Error(w, "Increment value should be int\n", http.StatusInternalServerError)
+		return
+	}
 
-// 	currentValInt, err := strconv.Atoi(currentVal)
-// 	if err != nil {
-// 		http.Error(w, "Key value should be int\n", http.StatusInternalServerError)
-// 		return
-// 	}
-
-// 	incInt, err := strconv.Atoi(increment)
-// 	if err != nil {
-// 		http.Error(w, "Increment value should be int\n", http.StatusInternalServerError)
-// 		return
-// 	}
-
-// 	itemscache.Cache.UpdateItem(key, fmt.Sprintf("%d", currentValInt+incInt))
-// }
+	cache.UpdateItem(key, fmt.Sprintf("%d", currentValInt+incInt))
+}

@@ -19,6 +19,11 @@ curl http://localhost:8000/item/key1 -X PUT -L -d '{"data":{"value":"val1"}}'
 curl http://localhost:8000/item/key2 -X PUT -L -d '{"data":{"value":"val2"}}'
 curl http://localhost:8000/item/key3 -X PUT -L -d '{"data":{"value":"val3"}}'
 echo
+echo --- get 3rd element and then delete and try it again ---
+curl http://localhost:8000/item/key3
+curl http://localhost:8000/item/key3 -X DELETE
+curl http://localhost:8000/item/key3
+
 echo --- get 1st item, fail to increase, change, fail to increase, change, increase, get ---
 curl http://localhost:8000/item/key1
 curl http://localhost:8000/item/key1/incr/abc -X POST
