@@ -1,11 +1,10 @@
-package statcounter
+package handlers
 
 import (
 	"fmt"
+	"github.com/gorilla/mux"
 	"net/http"
 	"restapiv2/internal/repository/statstorage"
-
-	"github.com/gorilla/mux"
 )
 
 type StatCounter struct {

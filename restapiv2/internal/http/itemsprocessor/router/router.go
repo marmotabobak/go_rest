@@ -3,8 +3,6 @@ package router
 import (
 	"net/http"
 	"restapiv2/internal/http/itemsprocessor/handlers"
-	"restapiv2/internal/http/itemsprocessor/statcounter"
-
 	"github.com/gorilla/mux"
 )
 
@@ -14,7 +12,7 @@ type ItemsProcessorRouter struct {
 
 func NewItemsProcessorRouter() *ItemsProcessorRouter {
 
-	statCounter := statcounter.NewStatCounter()
+	statCounter := handlers.NewStatCounter()
 	r := mux.NewRouter()
 
 	r.Handle("/stat", statCounter)
@@ -31,15 +29,6 @@ func NewItemsProcessorRouter() *ItemsProcessorRouter {
 func (ipr *ItemsProcessorRouter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	ipr.MuxRouter.ServeHTTP(w, r)
 }
-
-// func (ipr *ItemsProcessorRouter) StatHandler(w http.ResponseWriter, r *http.Request) {
-// 	switch r.Method {
-// 	case http.MethodGet:
-// 		ipr.StatCounter.PrintStat(w)
-// 	default:
-// 		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
-// 	}
-// }
 
 func GetItemHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
