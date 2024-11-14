@@ -46,10 +46,10 @@ func (i *ItemsProcessorRouter) getItemHandler(w http.ResponseWriter, r *http.Req
 	switch r.Method {
 	case http.MethodGet:
 		handlers.GetItem(w, i.cache, key)
-	// case http.MethodPut:
-	// 	handlers.PutItem(w, r, key)
-	// case http.MethodDelete:
-	// 	handlers.Deleteitem(w, key)
+	case http.MethodPut:
+		handlers.PutItem(w, r, i.cache, key)
+	case http.MethodDelete:
+		handlers.Deleteitem(w, i.cache, key)
 	default:
 		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
 	}
