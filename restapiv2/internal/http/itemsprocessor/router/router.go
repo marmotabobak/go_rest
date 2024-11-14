@@ -25,8 +25,8 @@ func NewItemsProcessorRouter() *ItemsProcessorRouter {
 
 	r.Handle("/stat", statCountHandler)
 	r.HandleFunc("/item/{key}", i.getItemHandler)
-	r.HandleFunc("/item/{key}/{action}", i.postHandler)
-	r.HandleFunc("/item/{key}/incr/{increment}", i.increasehandler)
+	r.HandleFunc("/item/{key}/{action}", i.postItemHandler)
+	r.HandleFunc("/item/{key}/incr/{increment}", i.increaseItemHandler)
 	r.Use(statCountHandler.Count)
 
 	return &i
@@ -55,7 +55,7 @@ func (i *ItemsProcessorRouter) getItemHandler(w http.ResponseWriter, r *http.Req
 	}
 }
 
-func (i *ItemsProcessorRouter) postHandler(w http.ResponseWriter, r *http.Request) {
+func (i *ItemsProcessorRouter) postItemHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		vars := mux.Vars(r)
 		key := vars["key"]
@@ -71,7 +71,7 @@ func (i *ItemsProcessorRouter) postHandler(w http.ResponseWriter, r *http.Reques
 	}
 }
 
-func (i *ItemsProcessorRouter) increasehandler(w http.ResponseWriter, r *http.Request) {
+func (i *ItemsProcessorRouter) increaseItemHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		vars := mux.Vars(r)
 		key := vars["key"]
