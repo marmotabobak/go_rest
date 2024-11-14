@@ -6,25 +6,25 @@ import (
 	"sync"
 )
 
-type StatStorageType struct {
+type StatStorage struct {
 	storage map[string]int
-	m sync.RWMutex
+	m       sync.RWMutex
 }
 
-func NewStatStorageType() *StatStorageType {
-	return &StatStorageType{
+func NewStatStorage() *StatStorage {
+	return &StatStorage{
 		storage: make(map[string]int),
-		m: sync.RWMutex{},
+		m:       sync.RWMutex{},
 	}
 }
 
-func (ss *StatStorageType) Update(itemAction string) {
+func (ss *StatStorage) Update(itemAction string) {
 	ss.m.Lock()
 	ss.storage[itemAction]++
 	ss.m.Unlock()
 }
 
-func (ss *StatStorageType) String() string {
+func (ss *StatStorage) String() string {
 	ss.m.RLock()
 	res := fmt.Sprintf("%v", utils.SprintMapStringInt(ss.storage))
 	ss.m.RUnlock()

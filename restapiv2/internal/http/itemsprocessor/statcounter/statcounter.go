@@ -1,19 +1,20 @@
 package statcounter
 
 import (
-	"restapiv2/internal/repository/statstorage"
 	"fmt"
-	"github.com/gorilla/mux"
 	"net/http"
+	"restapiv2/internal/repository/statstorage"
+
+	"github.com/gorilla/mux"
 )
 
 type StatCounter struct {
-	statStorage *statstorage.StatStorageType
+	statStorage *statstorage.StatStorage
 }
 
-func NewStatCounter() *StatCounter{
-	return &StatCounter {
-		statStorage: statstorage.NewStatStorageType(),
+func NewStatCounter() *StatCounter {
+	return &StatCounter{
+		statStorage: statstorage.NewStatStorage(),
 	}
 }
 
