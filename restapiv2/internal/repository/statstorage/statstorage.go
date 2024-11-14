@@ -2,23 +2,31 @@ package statstorage
 
 import (
 	"fmt"
-	"restapiv2/internal/mutex"
 	"restapiv2/pkg/utils"
+	"sync"
 )
 
-type StatStorageType map[string]int
-
-var StatStorage StatStorageType = StatStorageType{}
-
-func (s StatStorageType) Update(itemAction string) {
-	mutex.M.Lock()
-	s[itemAction]++
-	mutex.M.Unlock()
+type StatStorageType struct {
+	storage map[string]int
+	m sync.RWMutex
 }
 
-func (s StatStorageType) String() string {
-	mutex.M.RLock()
-	res := fmt.Sprintf("%v", utils.SprintMapStringInt(StatStorage))
-	mutex.M.RUnlock()
+func NewStatStorageType() *StatStorageType {
+	return &StatStorageType{
+		storage: make(map[string]int),
+		m: sync.RWMutex{},
+	}
+}
+
+func (ss *StatStorageType) Update(itemAction string) {
+	ss.m.Lock()
+	ss.storage[itemAction]++
+	ss.m.Unlock()
+}
+
+func (ss *StatStorageType) String() string {
+	ss.m.RLock()
+	res := fmt.Sprintf("%v", utils.SprintMapStringInt(ss.storage))
+	ss.m.RUnlock()
 	return res
 }

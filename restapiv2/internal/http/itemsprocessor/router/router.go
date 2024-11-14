@@ -4,34 +4,41 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"restapiv2/internal/http/itemsprocessor/handlers"
+	"restapiv2/internal/http/itemsprocessor/statcounter"
 )
 
 type ItemsProcessorRouter struct {
 	MuxRouter *mux.Router
+	StatCounter *statcounter.StatCounter
 }
 
 func NewItemsProcessorRouter() *ItemsProcessorRouter {
 
+	sc := statcounter.NewStatCounter()
 	r := mux.NewRouter()
-	r.HandleFunc("/stat", StatHandler)
+
+	ipr := ItemsProcessorRouter {
+		MuxRouter: r,
+		StatCounter: sc,
+	}
+
+	r.HandleFunc("/stat", ipr.StatHandler)
 	r.HandleFunc("/item/{key}", GetItemHandler)
 	r.HandleFunc("/item/{key}/{action}", PostHandler)
 	r.HandleFunc("/item/{key}/incr/{increment}", Increasehandler)
-	r.Use(CountStat)
+	r.Use(sc.CountStat)
 	
-	return &ItemsProcessorRouter {
-		MuxRouter: r,
-	}
+	return &ipr
 }
 
 func (ipr *ItemsProcessorRouter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	ipr.MuxRouter.ServeHTTP(w, r)
 }
 
-func StatHandler(w http.ResponseWriter, r *http.Request) {
+func (ipr *ItemsProcessorRouter) StatHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		handlers.PrintStat(w)
+		ipr.StatCounter.PrintStat(w)
 	default:
 		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
 	}
