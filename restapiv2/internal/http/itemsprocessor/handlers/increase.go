@@ -11,7 +11,7 @@ func IncreaseItem(w http.ResponseWriter, cache *itemscache.Cache, key string, in
 
 	val, exists := cache.GetItem(key)
 	if !exists {
-		http.Error(w, "No such key in cache\n", http.StatusInternalServerError)
+		http.Error(w, "No such key in cache\n", http.StatusNotFound)
 		return
 	}
 	
@@ -19,13 +19,13 @@ func IncreaseItem(w http.ResponseWriter, cache *itemscache.Cache, key string, in
 
 	currentValInt, err := strconv.Atoi(currentVal)
 	if err != nil {
-		http.Error(w, "Key value should be int\n", http.StatusInternalServerError)
+		http.Error(w, "Key value should be int\n", http.StatusBadRequest)
 		return
 	}
 
 	incInt, err := strconv.Atoi(increment)
 	if err != nil {
-		http.Error(w, "Increment value should be int\n", http.StatusInternalServerError)
+		http.Error(w, "Increment value should be int\n", http.StatusBadRequest)
 		return
 	}
 
