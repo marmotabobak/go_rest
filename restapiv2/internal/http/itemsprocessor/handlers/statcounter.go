@@ -49,10 +49,5 @@ func (sc *StatCountHandler) Count(handler http.Handler) http.Handler {
 }
 
 func (sc *StatCountHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case http.MethodGet:
-		fmt.Fprint(w, sc.statStorage.String())
-	default:
-		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
-	}
+	fmt.Fprint(w, sc.statStorage.String())
 }

@@ -3,6 +3,11 @@ curl http://localhost:8000/stat
 curl http://localhost:8000/stat
 curl http://localhost:8000/stat
 echo
+echo --- not-allowed methods ---
+curl http://localhost:8000/item/stat -X POST
+curl http://localhost:8000/item/key -X POST
+curl http://localhost:8000/item/key/action -X GET
+echo
 echo --- all methods fail, last is BadRequest ---
 curl http://localhost:8000/item/key
 curl http://localhost:8000/item/key -X DELETE
