@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 	"restapiv2/internal/repository/itemscache"
 	"strconv"
@@ -9,25 +8,24 @@ import (
 
 func IncreaseItem(w http.ResponseWriter, cache *itemscache.Cache, key string, increment string) {
 
-	val, exists := cache.GetItem(key)
-	if !exists {
-		http.Error(w, "No such key in cache\n", http.StatusNotFound)
-		return
-	}
-	
-	currentVal := val
-
-	currentValInt, err := strconv.Atoi(currentVal)
-	if err != nil {
-		http.Error(w, "Key value should be int\n", http.StatusBadRequest)
-		return
-	}
-
 	incInt, err := strconv.Atoi(increment)
 	if err != nil {
 		http.Error(w, "Increment value should be int\n", http.StatusBadRequest)
 		return
 	}
 
-	cache.UpdateItem(key, fmt.Sprintf("%d", currentValInt+incInt))
+	cacheErr := cache.IncreaseValue(key, incInt)
+	if cacheErr != nil {
+		var httpStatus int
+		switch cacheErr.Code {
+		case itemscache.AbsentKeyErrorCode:
+			httpStatus = http.StatusNotFound
+		case itemscache.IncreaseErrorValueNotIntCode:
+			httpStatus = http.StatusBadRequest
+		default:
+			httpStatus = http.StatusInternalServerError
+		}
+		http.Error(w, cacheErr.Desc, httpStatus)
+		return		
+	}
 }

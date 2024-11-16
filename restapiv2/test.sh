@@ -32,7 +32,7 @@ curl http://localhost:8000/item/key3
 
 echo --- get 1st item, fail to increase, change, fail to increase, change, increase, get ---
 curl http://localhost:8000/item/key1
-curl http://localhost:8000/item/key1/incr/abc -X POST
+curl http://localhost:8000/item/key1/incr/1 -X POST
 curl http://localhost:8000/item/key1 -X PUT -L -d '{"data":{"value":"99"}}'
 curl http://localhost:8000/item/key1/incr/abc -X POST
 curl http://localhost:8000/item/key1/incr/11 -X POST
