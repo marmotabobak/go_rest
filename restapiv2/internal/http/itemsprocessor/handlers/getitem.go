@@ -7,7 +7,7 @@ import (
 )
 
 func GetItem (w http.ResponseWriter, cache *itemscache.Cache, key string) {
-	val, exists := cache.ReturnValueIfExists(key)
+	val, exists := cache.GetItem(key)
 	if !exists {
 		http.Error(w, "No such key in cache\n", http.StatusInternalServerError)
 		return

@@ -34,11 +34,3 @@ func (c *Cache) DeleteItem(key string) {
 	delete(c.cache, key)
 	c.m.Unlock()
 }
-
-func (c *Cache) ReturnValueIfExists(key string) (string, bool) {
-	val, exists :=  c.cache[key]
-	if !exists {
-		return "", false
-	}
-	return val, true
-}
