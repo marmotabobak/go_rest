@@ -30,7 +30,6 @@ func NewItemsProcessorRouter() *ItemsProcessorRouter {
 	r.Use(statCountHandler.Count)
 
 	return &i
-
 }
 
 func (i *ItemsProcessorRouter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -38,7 +37,7 @@ func (i *ItemsProcessorRouter) ServeHTTP(w http.ResponseWriter, r *http.Request)
 }
 
 // TODO: Нужно ли выносить логику маршрутизации в хэндлеры-функции или оставить здесь в маршрутизаторе?
-// Для StatCounter вынес в него, но и он является не функцией, а хэндлером полноценным
+// Для StatCounter вынес в него, но он является не функцией, а полноценным хэндлером 
 
 func (i *ItemsProcessorRouter) getItemHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)

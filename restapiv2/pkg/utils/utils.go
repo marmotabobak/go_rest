@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"sort"
+	"unicode/utf8"
 )
 
 var GetPutDeleteMethods = [3]string{
@@ -44,7 +45,7 @@ func ReversreString(s string) string {
 
 func DeduplicateString(s string) string {
 	m := make(map[rune]bool)
-	var runes []rune
+	runes := make([]rune, 0, utf8.RuneCountInString(s))
 
 	for _, r := range s {
 		if m[r] {
