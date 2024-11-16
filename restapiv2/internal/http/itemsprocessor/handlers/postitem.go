@@ -24,6 +24,8 @@ func PostItem(w http.ResponseWriter, cache *itemscache.Cache, key string, action
 		newVal = utils.SortString(currentVal)
 	case "dedup":
 		newVal = utils.DeduplicateString(currentVal)
+	default:
+		http.Error(w, "No such action", http.StatusBadRequest)
 	}
 
 	cache.UpdateItem(key, newVal)

@@ -3,13 +3,14 @@ curl http://localhost:8000/stat
 curl http://localhost:8000/stat
 curl http://localhost:8000/stat
 echo
-echo --- all methods fail ---
+echo --- all methods fail, last is BadRequest ---
 curl http://localhost:8000/item/key
 curl http://localhost:8000/item/key -X DELETE
 curl http://localhost:8000/item/key/incr/2 -X POST
 curl http://localhost:8000/item/key/reverse -X POST
 curl http://localhost:8000/item/key/sort -X POST
 curl http://localhost:8000/item/key/dedup -X POST
+curl http://localhost:8000/item/key/non-exist-action -X POST
 echo
 echo --- current stat ---
 curl http://localhost:8000/stat
