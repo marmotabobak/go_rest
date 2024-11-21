@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"sort"
+	"strings"
 	"unicode/utf8"
 )
 
@@ -28,11 +29,11 @@ func MethodIsGetPutDelete(method string) bool {
 }
 
 func SprintMapStringInt(m map[string]int) string {
-	var s string
+	var b strings.Builder
 	for k, v := range m {
-		s += fmt.Sprintf("%s:\t%d\n", k, v)
+		fmt.Fprintf(&b, "%s:\t%d\n", k, v)
 	}
-	return s
+	return b.String()
 }
 
 func ReversreString(s string) string {
